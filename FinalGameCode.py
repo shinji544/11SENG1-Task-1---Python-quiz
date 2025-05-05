@@ -29,7 +29,7 @@ tab_frame_fullscreen_path = os.path.join(script_dir, "boxbox_fullscreen.png")
 dark_tab_frame_fullscreen_path = os.path.join(script_dir, "boxbox_fullscreen_darkmode.png")
 timed_tab_frame_fullscreen_path = os.path.join(script_dir, "boxbox_timed_fullscreen.png")
 dark_timed_tab_frame_fullscreen_path = os.path.join(script_dir, "boxbox_timed_fullscreen_dark.png")
-answer_box_path = os.path.join(script_dir, "answer_box.png")  # 792 by 82
+answer_box_path = os.path.join(script_dir, "answer_box.png")  
 
 # Load icons
 sun_icon = ctk.CTkImage(light_image=Image.open(sun_path), size=(32, 32))
@@ -70,6 +70,7 @@ bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 quiz_bg_image = ctk.CTkImage(light_image=Image.open(tab_frame_fullscreen_path), size=(800, 600))
 quiz_bg_label = ctk.CTkLabel(app, image=quiz_bg_image, text="")
 
+# Timed quiz background
 timed_quiz_bg_image = ctk.CTkImage(light_image=Image.open(timed_tab_frame_fullscreen_path), size=(800, 600))
 timed_quiz_bg_label = ctk.CTkLabel(app, image=timed_quiz_bg_image, text="")
 
@@ -91,6 +92,7 @@ dark_text = "white"
 hover_light = "#D0D0D0"
 hover_dark = "#3A3A3A"
 
+# ======================== All Functions ========================
 # ======== Theme Toggle Function ========
 current_theme = "light"
 
@@ -185,7 +187,7 @@ def goto_main_menu():
     title_menu.place_forget()
     tab_frame.place_forget()
     quiz_bg_label.place_forget()
-    timed_quiz_bg_label.place_forget()  # Hide the timed quiz background
+    timed_quiz_bg_label.place_forget()  
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
     practice_tab_frame.place(relx=0.25, rely=0.5, anchor="center")
     timed_tab_frame.place(relx=0.75, rely=0.5, anchor="center")
@@ -199,7 +201,7 @@ def back_to_title():
     timed_tab_frame.place_forget()
     menu_button.place_forget()
     quiz_bg_label.place_forget()
-    timed_quiz_bg_label.place_forget()  # Hide the timed quiz background
+    timed_quiz_bg_label.place_forget()  
     bg_label.place(x=0, y=0, relwidth=1, relheight=1)
     title_menu.place(relx=0.5, rely=0.55, anchor="center")
     tab_frame.place(relx=0.5, rely=0.5, anchor="center")
@@ -213,9 +215,9 @@ def back_to_menu():
     timed_quiz_frame.place_forget()
     mode_select_frame.place_forget()
     quiz_bg_label.place_forget()
-    timed_quiz_bg_label.place_forget()  # Hide timed quiz background
+    timed_quiz_bg_label.place_forget()  
     answer_entry.place_forget()
-    bg_label.place(x=0, y=0, relwidth=1, relheight=1)  # Restore default background
+    bg_label.place(x=0, y=0, relwidth=1, relheight=1)  
     practice_tab_frame.place(relx=0.25, rely=0.5, anchor="center")
     timed_tab_frame.place(relx=0.75, rely=0.5, anchor="center")
     menu_button.place(relx=0.5, rely=0.8, anchor="center")
@@ -230,8 +232,8 @@ def show_quiz():
     timed_tab_frame.place_forget()
     menu_button.place_forget()
     bg_label.place_forget()
-    timed_quiz_bg_label.place_forget()  # Hide the timed quiz background
-    quiz_bg_label.place(x=0, y=0, relwidth=1, relheight=1)  # Show the practice quiz background
+    timed_quiz_bg_label.place_forget()  
+    quiz_bg_label.place(x=0, y=0, relwidth=1, relheight=1)  
     quiz_frame.place(relx=0.5, rely=0.55, anchor="center")
     practice_close_button.place(x=160, y=15)
     unbind_drag(practice_tab_frame)
@@ -256,13 +258,11 @@ def show_timed_quiz(infinite=False):
     score_label.configure(text=f"Score: {score}")
     progress_bar.set(1.0)
     progress_bar.configure(progress_color="#4CAF50")
-    final_score_label.place_forget()  # Hide final score label
-    retry_button.place_forget()  # Hide retry button
-    timed_feedback.configure(text="")  # Clear feedback
-    # Re-pack progress_bar and score_label if hidden
+    final_score_label.place_forget()  
+    retry_button.place_forget()  
+    timed_feedback.configure(text="")  
     progress_bar.pack(pady=10)
     score_label.pack(pady=10)
-    # Rebind Enter
     timed_entry.bind("<Return>", lambda event: check_timed_answer())
     start_timer()
     next_timed_question()
@@ -271,10 +271,11 @@ def show_mode_select():
     practice_tab_frame.place_forget()
     timed_tab_frame.place_forget()
     menu_button.place_forget()
-    bg_label.place_forget()  # Hide default background
-    timed_quiz_bg_label.place(x=0, y=0, relwidth=1, relheight=1)  # Show timed quiz background
+    bg_label.place_forget()  
+    timed_quiz_bg_label.place(x=0, y=0, relwidth=1, relheight=1)  
     practice_close_button.place(x=160, y=15)
     mode_select_frame.place(relx=0.5, rely=0.5, anchor="center")
+
 # ======== Practice Mode ========
 x = y = correct = 0
 
@@ -286,7 +287,7 @@ def next_question():
     message_question.configure(text=f"{x} x {y}")
     entry.delete(0, ctk.END)
     feedback_label.configure(text="")
-    retry_button.pack_forget()
+    retry_practice_button.pack_forget()
 
 def show_hint():
     if quiz_frame.winfo_ismapped():
@@ -310,15 +311,16 @@ def check_answer():
         return
     if user_answer == correct:
         feedback_label.configure(text="Good job!", text_color="green")
+        retry_practice_button.place(relx=0.5, rely=0.65, anchor="center")  
     else:
         feedback_label.configure(text=f"Unlucky, the answer was {correct}", text_color="red")
-    retry_button.pack(pady=10)
+    retry_practice_button.pack(pady=10)
 
 # ======== Timed Mode ========
 score = 0
 question_num = 0
 max_questions = 10  # For 10 Questions mode
-time_per_question = 5.0  # 5 seconds per question (float for precision)
+time_per_question = 5.0  # 5 seconds per question 
 time_left = time_per_question  # Remaining time for current question
 timer_running = False  # Timer state
 infinite_mode = False  # True for Infinite Mode, False for 10 Questions mode
@@ -338,13 +340,13 @@ def next_timed_question():
     timed_entry.delete(0, ctk.END)
     timed_feedback.configure(text="")
     question_num += 1
-    progress_bar.set(1.0)  # Reset progress bar
-    progress_bar.configure(progress_color="#4CAF50")  # Reset to green
-    start_timer()  # Start timer for new question
+    progress_bar.set(1.0)  
+    progress_bar.configure(progress_color="#4CAF50")  
+    start_timer() 
 
 def check_timed_answer():
     global score, correct
-    if not timer_running:  # Ignore if quiz has ended
+    if not timer_running:  
         return
     user_input = timed_entry.get()
     try:
@@ -352,7 +354,7 @@ def check_timed_answer():
     except ValueError:
         timed_feedback.configure(text="Invalid input", text_color="orange")
         return
-    stop_timer()  # Stop timer when answer is submitted
+    stop_timer()  
     if user_answer == correct:
         score += 1
         timed_feedback.configure(text="Correct!", text_color="green")
@@ -362,29 +364,28 @@ def check_timed_answer():
         else:
             final_score_label.configure(text=f"Quiz Complete! Score: {score}/{max_questions}")
             final_score_label.place(relx=0.5, rely=0.5, anchor="center")
-            final_score_label.lift()  # Bring to top
-            timed_quiz_frame.lift()  # Ensure frame is above background
-            retry_button.place(relx=0.5, rely=0.65, anchor="center")  # Show retry button
-            retry_button.lift()  # Ensure button is visible
+            final_score_label.lift()  
+            timed_quiz_frame.lift()  
+            retry_button.place(relx=0.5, rely=0.65, anchor="center")  
+            retry_button.lift()  
             timed_entry.configure(state="disabled")
             timed_hint_button.configure(state="disabled")
-            timed_entry.unbind("<Return>")  # Unbind Enter
-            # Hide non-essential widgets
+            timed_entry.unbind("<Return>")  
             score_label.pack_forget()
     else:
         timed_feedback.configure(text=f"Wrong. It was {correct}.", text_color="red")
         score_label.configure(text=f"Score: {score}")
         final_score_label.configure(text=f"Final Score: {score}" if infinite_mode else f"Final Score: {score}/{max_questions}")
         final_score_label.place(relx=0.5, rely=0.5, anchor="center")
-        final_score_label.lift()  # Bring to top
-        timed_quiz_frame.lift()  # Ensure frame is above background
-        retry_button.place(relx=0.5, rely=0.65, anchor="center")  # Show retry button
-        retry_button.lift()  # Ensure button is visible
+        final_score_label.lift()  
+        timed_quiz_frame.lift()  
+        retry_button.place(relx=0.5, rely=0.65, anchor="center")  
+        retry_button.lift() 
         timed_entry.configure(state="disabled")
         timed_hint_button.configure(state="disabled")
-        timed_entry.unbind("<Return>")  # Unbind Enter
-        end_timed_quiz()  # End quiz on wrong answer
-    progress_bar.configure(progress_color="#4CAF50")  # Reset color for next question (if applicable)
+        timed_entry.unbind("<Return>")  
+        end_timed_quiz()  
+    progress_bar.configure(progress_color="#4CAF50")  
 
 def start_timer():
     global time_left, timer_running
@@ -396,14 +397,12 @@ def start_timer():
 def update_timer():
     global time_left, timer_running
     if timer_running and time_left > 0:
-        time_left -= 0.1  # Decrement by 0.1 seconds
+        time_left -= 0.1 
         progress_bar.set(time_left / time_per_question)
-        # Change progress bar color based on time left
         if time_left / time_per_question < 0.3:
-            progress_bar.configure(progress_color="#FF0000")  # Red when <30%
-        elif time_left / time_per_question < 0.6:
-            progress_bar.configure(progress_color="#FFA500")  # Orange when <60%
-        app.after(100, update_timer)  # Update every 100ms
+            progress_bar.configure(progress_color="#FF0000") 
+            progress_bar.configure(progress_color="#FFA500") 
+        app.after(100, update_timer) 
     elif time_left <= 0:
         end_timed_quiz()
 
@@ -415,28 +414,25 @@ def end_timed_quiz():
     global timer_running
     timer_running = False
     timed_question.configure(text="Game Over!")
-    if not timed_feedback.cget("text").startswith("Wrong. It was"):  # Preserve wrong answer feedback
+    if not timed_feedback.cget("text").startswith("Wrong. It was"):  
         timed_feedback.configure(text=f"Final Score: {score}" if infinite_mode else f"Final Score: {score}/{max_questions}", text_color="cyan")
     final_score_label.configure(text=f"Final Score: {score}" if infinite_mode else f"Final Score: {score}/{max_questions}")
     final_score_label.place(relx=0.5, rely=0.5, anchor="center")
-    final_score_label.lift()  # Bring to top
-    timed_quiz_frame.lift()  # Ensure frame is above background
-    retry_button.place(relx=0.5, rely=0.65, anchor="center")  # Show retry button
-    retry_button.lift()  # Ensure button is visible
+    final_score_label.lift()  
+    timed_quiz_frame.lift() 
+    retry_button.place(relx=0.5, rely=0.65, anchor="center") 
+    retry_button.lift()
     timed_entry.configure(state="disabled")
     timed_hint_button.configure(state="disabled")
-    timed_entry.unbind("<Return>")  # Unbind Enter
-    # Hide non-essential widgets  # Add this
+    timed_entry.unbind("<Return>")  
     score_label.pack_forget()
 
 def reset_timed_quiz():
     global score, question_num, time_left, timer_running
-    # Reset global variables
     score = 0
     question_num = 0
     time_left = time_per_question
     timer_running = False
-    # Reset UI
     timed_entry.configure(state="normal")
     timed_hint_button.configure(state="normal")
     timed_feedback.configure(text="")
@@ -445,11 +441,8 @@ def reset_timed_quiz():
     score_label.configure(text=f"Score: {score}")
     progress_bar.set(1.0)
     progress_bar.configure(progress_color="#4CAF50")
-    # Re-pack hidden widgets
     score_label.pack(pady=10)
-    # Rebind Enter
     timed_entry.bind("<Return>", lambda event: check_timed_answer())
-    # Restart quiz in current mode
     start_timer()
     next_timed_question()
 
@@ -480,7 +473,7 @@ def end_countdown(callback):
     callback()
 
 # ======== UI Widgets ========
-# Title frame
+# ======================== Title frame ========================
 tab_frame_image = ctk.CTkImage(light_image=Image.open(tab_frame_path), size=(450, 400))
 tab_frame = ctk.CTkLabel(app, image=tab_frame_image, text="", fg_color="transparent")
 tab_frame.place(relx=0.5, rely=0.5, anchor="center")
@@ -510,7 +503,7 @@ quit_button.pack()
 quit_label = ctk.CTkLabel(quit_frame, text="Quit", font=("Helvetica", 14), text_color=light_text)
 quit_label.pack(pady=5)
 
-# Settings
+# ======================== Settings ========================
 settings_frame_image = ctk.CTkImage(light_image=Image.open(settings_tab_path), size=(450, 400))
 settings_frame = ctk.CTkLabel(app, image=settings_frame_image, text="", fg_color="transparent")
 settings_menu = ctk.CTkFrame(settings_frame, fg_color=light_bg, width=200, height=200)
@@ -524,7 +517,7 @@ settings_button.place(x=380, y=60)
 settings_close_button = ctk.CTkButton(settings_frame, text="", image=close_icon, width=20, height=20,
                                       fg_color=light_bg, hover_color=hover_light, command=close_settings)
 
-# Practice tab
+# ======================== Practice tab ========================
 practice_tab_frame = ctk.CTkFrame(app, width=350, height=300, corner_radius=0, fg_color=light_bg)
 practice_bg_label = ctk.CTkLabel(practice_tab_frame, image=practice_frame_image, text="", fg_color="transparent")
 practice_bg_label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -536,7 +529,7 @@ practice_button = ctk.CTkButton(practice_menu, text="Play", font=button_font, wi
                                 command=show_quiz)
 practice_button.pack(pady=(40, 10))
 
-# Timed tab
+# ======================== Timed tab ========================
 timed_tab_frame = ctk.CTkFrame(app, width=350, height=300, corner_radius=0, fg_color=light_bg)
 timed_bg_label = ctk.CTkLabel(timed_tab_frame, image=timed_frame_image, text="", fg_color="transparent")
 timed_bg_label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -556,7 +549,7 @@ menu_button = ctk.CTkButton(app, text="Go Back", font=button_font, width=220, he
                             text_color=light_text, image=back_icon, compound="left",
                             command=back_to_title)
 
-# Quiz frame (Practice)
+# ======================== Quiz frame (Practice) ======================== 
 quiz_frame = ctk.CTkFrame(app, corner_radius=20, fg_color=light_bg)
 message_question = ctk.CTkLabel(quiz_frame, text="", font=("label_font", 35, "bold"), text_color=light_text)
 
@@ -570,7 +563,7 @@ entry.bind("<Return>", lambda event: check_answer())
 hint_button = ctk.CTkButton(quiz_frame, text="", image=hint_icon, width=30, height=30,
                             fg_color=light_bg, hover_color=hover_light, command=show_hint)
 feedback_label = ctk.CTkLabel(quiz_frame, text="", font=button_font, text_color=light_text)
-retry_button = ctk.CTkButton(quiz_frame, text="Try Again?", font=button_font,
+retry_practice_button = ctk.CTkButton(quiz_frame, text="Try Again?", font=button_font,
                              fg_color=light_bg, hover_color=hover_light, corner_radius=10,
                              text_color=light_text, command=next_question)
 practice_close_button = ctk.CTkButton(app, text="", image=close_icon, width=20, height=20,
@@ -592,7 +585,7 @@ hint_button.place(in_=answer_entry, relx=0.95, rely=0.5, anchor="e")
 
 feedback_label.pack(pady=10)
 
-# Timed quiz frame
+# ======================== Timed quiz frame ======================== 
 timed_quiz_frame = ctk.CTkFrame(app, corner_radius=20, fg_color=light_bg)
 
 # Question label
@@ -631,7 +624,7 @@ timed_feedback = ctk.CTkLabel(timed_quiz_frame, text="", font=button_font, text_
 
 # Final score label (centered, hidden initially)
 final_score_label = ctk.CTkLabel(timed_quiz_frame, text="", font=ctk.CTkFont(family="Segoe UI", size=40, weight="bold"), text_color="cyan")
-final_score_label.place_forget()  # Hidden until quiz ends
+final_score_label.place_forget()  
 
 # Retry button (hidden initially)
 retry_button = ctk.CTkButton(
@@ -648,9 +641,8 @@ retry_button = ctk.CTkButton(
     compound="left",
     command=lambda: reset_timed_quiz()
 )
-retry_button.place_forget()  # Hidden until quiz ends
+retry_button.place_forget()  
 
-# Layout for remaining widgets
 timed_answer_frame = ctk.CTkFrame(timed_quiz_frame, fg_color=light_bg)
 timed_answer_frame.pack(pady=5)
 timed_answer_entry.pack()
@@ -658,7 +650,7 @@ timed_entry.place(in_=timed_answer_entry, relx=0.5, rely=0.5, anchor="center", r
 timed_hint_button.place(in_=timed_answer_entry, relx=0.95, rely=0.5, anchor="e")
 timed_feedback.pack(pady=10)
 
-# Mode selection frame
+# ======================== Mode selection frame ======================== 
 mode_select_frame = ctk.CTkFrame(app, corner_radius=20, fg_color=light_bg)
 mode_select_label = ctk.CTkLabel(mode_select_frame, text="Select Timed Mode", font=title_font, text_color=light_text)
 mode_select_label.pack(pady=20)
